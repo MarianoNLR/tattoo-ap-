@@ -1,0 +1,22 @@
+{
+  "name": "tattoo-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch ./app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.1",
+    "mysql2": "^3.9.2",
+    "standard": "^17.1.0"
+  },
+  "devDependencies": {
+    "standard": "*"
+  }
+}
