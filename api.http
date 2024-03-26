@@ -1,0 +1,11 @@
+//Obtener todos los tattooes
+GET http://localhost:3000/tattoo
+
+//Obtener tattooes por categoria
+
+GET http://localhost:3000/tattoo?category=Anime
+
+//Obtener tattoo por id
+
+GET http://localhost:3000/tattoo/1
+
