@@ -32,7 +32,7 @@ export const createTattooRouter = ({ tattooModel }) => {
 
   tattooRouter.get('/', tattooController.getAll)
   tattooRouter.get('/:id', tattooController.getById)
-
+  tattooRouter.delete('/:id', tattooController.delete)
   tattooRouter.post('/', (req, res, next) => {
     multerUpload.single('image')(req, res, (err) => {
       if (err) {

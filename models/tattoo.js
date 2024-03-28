@@ -89,7 +89,15 @@ export class TattooModel {
   }
 
   static async delete ({ id }) {
+    const result = await connection.query(
+      `DELETE FROM tattoodb.tattoo 
+      WHERE idTattoo = ?`, [id]
+    )
 
+    if (result[0].affectedRows === undefined) return { message: 'There is no tattoo with the  given id. Try again please.' }
+    else return { message: 'Tattoo has been succesfully deleted.' }
+
+    // TODO agregar manjeador de error
   }
 
   static async update ({ id, input }) {
