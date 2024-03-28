@@ -1,6 +1,7 @@
 import mysql from 'mysql2/promise'
+import { extname } from 'path'
 
-const urlBase = 'http://localhost:3000/'
+const urlBase = 'http://localhost:3000/uploads'
 
 const config = {
   host: 'localhost',
@@ -24,7 +25,9 @@ export class TattooModel {
       )
     } else {
       [tattooes] = await connection.query(
-        'SELECT idTattoo, name, categoryId, imageURL FROM tattoo;'
+        `SELECT idTattoo, tattoo.name, imageURL, category.name as category 
+        FROM tattoodb.tattoo 
+        INNER JOIN tattoodb.category ON tattoo.categoryId = category.idCategory ;`
       )
     }
 
@@ -40,10 +43,12 @@ export class TattooModel {
 
   static async getById ({ id }) {
     const [tattoo] = await connection.query(
-      'SELECT idTattoo, tattoo.name, imageURL, category.name as Category FROM tattoo INNER JOIN category ON tattoo.categoryId = category.idCategory WHERE tattoo.idTattoo = ?', [id]
+      `SELECT idTattoo, tattoo.name, imageURL, category.name as Category 
+      FROM tattoo INNER JOIN category ON tattoo.categoryId = category.idCategory 
+      WHERE tattoo.idTattoo = ?`, [id]
     )
 
-    if (!tattoo) return { err: 'The given id was not found' }
+    if (!tattoo) return { err: 'Tattoo not found' }
 
     const tattooFullUrl = tattoo.map(tattoo => ({
       ...tattoo,
@@ -53,8 +58,34 @@ export class TattooModel {
     return tattooFullUrl
   }
 
-  static async create ({ input }) {
+  static async create ({ body, file }) {
+    const { name, categoryName } = body
+    const fileExtension = extname(file.originalname)
+    const fileName = file.filename.split(fileExtension)[0]
+    const fileFullName = `uploads/${fileName}${fileExtension}`
+    console.log(file.filename)
+    try {
+      const [category] = await connection.query(
+        `SELECT idCategory FROM category 
+        WHERE name = ?`, [categoryName]
+      )
 
+      const newTattoo = await connection.query(
+        `INSERT INTO tattoodb.tattoo (name, categoryId, imageURL)
+        VALUES (?, ?, ?)`, [name, category[0].idCategory, fileFullName]
+      )
+
+      const [insertTattoo] = await connection.query(
+        `SELECT idTattoo, tattoo.name, imageURL, category.name as Category 
+      FROM tattoo INNER JOIN category ON tattoo.categoryId = category.idCategory 
+      WHERE tattoo.idTattoo = ?`, [newTattoo[0].insertId]
+      )
+
+      return insertTattoo
+    } catch (error) {
+      // throw new Error('An error has ocurred while creating a Tattoo, please try again.')
+      console.log(error)
+    }
   }
 
   static async delete ({ id }) {

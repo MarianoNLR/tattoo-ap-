@@ -14,4 +14,10 @@ export class TattooController {
     const tattoo = await this.tattooModel.getById({ id })
     res.json(tattoo)
   }
+
+  create = async (req, res) => {
+    const { body, file } = req
+    const newTattoo = await this.tattooModel.create({ body, file })
+    res.status(201).json(newTattoo)
+  }
 }
