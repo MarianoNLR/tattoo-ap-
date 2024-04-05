@@ -26,4 +26,11 @@ export class TattooController {
     const result = await this.tattooModel.delete({ id })
     res.json(result)
   }
+
+  update = async (req, res) => {
+    const { id } = req.params
+    const { body, file } = req
+    const result = await this.tattooModel.update({ id, body, file })
+    res.json(result)
+  }
 }

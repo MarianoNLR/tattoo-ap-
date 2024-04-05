@@ -42,6 +42,15 @@ export const createTattooRouter = ({ tattooModel }) => {
       tattooController.create(req, res)
     })
   })
+  tattooRouter.put('/:id', (req, res, next) => {
+    multerUpload.single('image')(req, res, (err) => {
+      if (err) {
+        return res.status(400).json({ error: err.message })
+      }
+
+      tattooController.update(req, res)
+    })
+  })
 
   return tattooRouter
 }
