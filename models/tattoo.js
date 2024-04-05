@@ -47,6 +47,7 @@ export class TattooModel {
     return tattooesFullUrl
   }
 
+  // Get tattoo by id
   static async getById ({ id }) {
     const [tattoo] = await connection.query(
       `SELECT idTattoo, tattoo.name, imageURL, category.name as Category 
@@ -64,6 +65,7 @@ export class TattooModel {
     return tattooFullUrl
   }
 
+  // Create a tattoo
   static async create ({ body, file }) {
     const { name, categoryName } = body
     // Set file data to upload with a specific name pattern
@@ -100,6 +102,7 @@ export class TattooModel {
     }
   }
 
+  // Delete a tattoo from db
   static async delete ({ id }) {
     // Get tattoo to be deleted.
     const [tattooData] = await connection.query(
@@ -132,6 +135,7 @@ export class TattooModel {
     // TODO agregar manjeador de error
   }
 
+  // Update tattoo's data
   static async update ({ id, body, file }) {
     const { name, categoryName } = body
 
