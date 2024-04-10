@@ -31,7 +31,11 @@ export const createTattooRouter = ({ tattooModel }) => {
   const tattooController = new TattooController({ tattooModel })
 
   tattooRouter.get('/', tattooController.getAll)
+  tattooRouter.get('/category', tattooController.getAllCategory)
+
   tattooRouter.get('/:id', tattooController.getById)
+  tattooRouter.get('/category/:id', tattooController.getCategoryById)
+
   tattooRouter.delete('/:id', tattooController.delete)
   tattooRouter.post('/', (req, res, next) => {
     multerUpload.single('image')(req, res, (err) => {
@@ -42,6 +46,7 @@ export const createTattooRouter = ({ tattooModel }) => {
       tattooController.create(req, res)
     })
   })
+  tattooRouter.post('/category', tattooController.createCategory)
   tattooRouter.put('/:id', (req, res, next) => {
     multerUpload.single('image')(req, res, (err) => {
       if (err) {
@@ -51,7 +56,6 @@ export const createTattooRouter = ({ tattooModel }) => {
       tattooController.update(req, res)
     })
   })
-
   return tattooRouter
 }
 

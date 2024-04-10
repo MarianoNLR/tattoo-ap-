@@ -191,4 +191,44 @@ export class TattooModel {
 
     return updatedData[0]
   }
+
+  // Get all categories
+  static async getAllCategory () {
+    const result = await connection.query(
+      `SELECT name
+      FROM category`
+    )
+    console.log(result)
+    return result[0]
+  }
+
+  // Get category by id
+  static async getCategoryById ({ id }) {
+    const result = await connection.query(
+      `SELECT * 
+      FROM category WHERE idCategory = ?`, [id]
+    )
+
+    return result[0]
+  }
+
+  static async createCategory ({ body }) {
+    const { name } = body
+    console.log(name)
+    try {
+      const newCategory = await connection.query(
+        `INSERT INTO tattoodb.category (name)
+        VALUES (?)`, [name]
+      )
+
+      const [insertedCategory] = await connection.query(
+        `SELECT * FROM tattoodb.category 
+        WHERE idCategory = ?`, [newCategory[0].insertId]
+      )
+
+      return insertedCategory
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 }
