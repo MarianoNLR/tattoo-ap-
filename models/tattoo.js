@@ -67,7 +67,7 @@ export class TattooModel {
 
   // Create a tattoo
   static async create ({ body, file }) {
-    const { name, categoryName } = body
+    const { name, category } = body
     // Set file data to upload with a specific name pattern
     const fileExtension = extname(file.originalname)
     const fileName = file.filename.split(fileExtension)[0]
@@ -77,15 +77,15 @@ export class TattooModel {
 
     try {
       // Select from category it needed because from frontend will come the name not the id category
-      const [category] = await connection.query(
+      const [categoryID] = await connection.query(
         `SELECT idCategory FROM category 
-        WHERE name = ?`, [categoryName]
+        WHERE name = ?`, [category]
       )
 
       // Create new tattoo
       const newTattoo = await connection.query(
         `INSERT INTO tattoodb.tattoo (name, categoryId, imageURL)
-        VALUES (?, ?, ?)`, [name, category[0].idCategory, fileFullName]
+        VALUES (?, ?, ?)`, [name, categoryID[0].idCategory, fileFullName]
       )
 
       // Getting new tattoo's data to return to the user
@@ -194,12 +194,11 @@ export class TattooModel {
 
   // Get all categories
   static async getAllCategory () {
-    const result = await connection.query(
+    const [result] = await connection.query(
       `SELECT name
       FROM category`
     )
-    console.log(result)
-    return result[0]
+    return result
   }
 
   // Get category by id
@@ -214,11 +213,12 @@ export class TattooModel {
 
   static async createCategory ({ body }) {
     const { name } = body
-    console.log(name)
+    let capitalized = name.toLowerCase()
+    capitalized = name.charAt(0).toUpperCase() + name.slice(1)
     try {
       const newCategory = await connection.query(
         `INSERT INTO tattoodb.category (name)
-        VALUES (?)`, [name]
+        VALUES (?)`, [capitalized]
       )
 
       const [insertedCategory] = await connection.query(
