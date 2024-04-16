@@ -21,6 +21,7 @@ export const createApp = ({ tattooModel, userModel }) => {
   app.use(json())
 
   app.use('/uploads', express.static(imageDirectory))
+
   app.use('/tattoo', createTattooRouter({ tattooModel }))
   app.use('/users', createUserRouter({ userModel }))
 

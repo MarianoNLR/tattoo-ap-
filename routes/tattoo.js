@@ -3,6 +3,7 @@ import { TattooController } from '../controllers/tattoo.js'
 import { dirname, join, extname } from 'path'
 import { fileURLToPath } from 'url'
 import multer from 'multer'
+import { userExtractor } from '../middleware/userExtractor.js'
 
 const CURRENT_DIR = dirname(fileURLToPath(import.meta.url))
 const MIMETYPES = ['image/jpeg', 'image/png']
@@ -27,17 +28,16 @@ const multerUpload = multer({
 
 export const createTattooRouter = ({ tattooModel }) => {
   const tattooRouter = Router()
-
   const tattooController = new TattooController({ tattooModel })
 
-  tattooRouter.get('/', tattooController.getAll)
-  tattooRouter.get('/category', tattooController.getAllCategory)
+  tattooRouter.get('/', userExtractor, tattooController.getAll)
+  tattooRouter.get('/category', userExtractor, tattooController.getAllCategory)
 
-  tattooRouter.get('/:id', tattooController.getById)
-  tattooRouter.get('/category/:id', tattooController.getCategoryById)
+  tattooRouter.get('/:id', userExtractor, tattooController.getById)
+  tattooRouter.get('/category/:id', userExtractor, tattooController.getCategoryById)
 
-  tattooRouter.delete('/:id', tattooController.delete)
-  tattooRouter.post('/', (req, res, next) => {
+  tattooRouter.delete('/:id', userExtractor, tattooController.delete)
+  tattooRouter.post('/', userExtractor, (req, res, next) => {
     multerUpload.single('image')(req, res, (err) => {
       if (err) {
         return res.status(400).json({ error: err.message })
@@ -46,8 +46,8 @@ export const createTattooRouter = ({ tattooModel }) => {
       tattooController.create(req, res)
     })
   })
-  tattooRouter.post('/category', tattooController.createCategory)
-  tattooRouter.put('/:id', (req, res, next) => {
+  tattooRouter.post('/category', userExtractor, tattooController.createCategory)
+  tattooRouter.put('/:id', userExtractor, (req, res, next) => {
     multerUpload.single('image')(req, res, (err) => {
       if (err) {
         return res.status(400).json({ error: err.message })

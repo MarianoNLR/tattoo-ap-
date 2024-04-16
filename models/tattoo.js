@@ -67,7 +67,7 @@ export class TattooModel {
 
   // Create a tattoo
   static async create ({ body, file }) {
-    const { name, category } = body
+    const { name, categoryName } = body
     // Set file data to upload with a specific name pattern
     const fileExtension = extname(file.originalname)
     const fileName = file.filename.split(fileExtension)[0]
@@ -79,7 +79,7 @@ export class TattooModel {
       // Select from category it needed because from frontend will come the name not the id category
       const [categoryID] = await connection.query(
         `SELECT idCategory FROM category 
-        WHERE name = ?`, [category]
+        WHERE name = ?`, [categoryName]
       )
 
       // Create new tattoo
