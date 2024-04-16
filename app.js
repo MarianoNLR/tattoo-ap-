@@ -4,8 +4,9 @@ import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
 import bodyParser from 'body-parser'
+import { createUserRouter } from './routes/users.js'
 
-export const createApp = ({ tattooModel }) => {
+export const createApp = ({ tattooModel, userModel }) => {
   const app = express()
   app.use(cors())
   app.disable('x-powered-by')
@@ -20,8 +21,8 @@ export const createApp = ({ tattooModel }) => {
   app.use(json())
 
   app.use('/uploads', express.static(imageDirectory))
-
   app.use('/tattoo', createTattooRouter({ tattooModel }))
+  app.use('/users', createUserRouter({ userModel }))
 
   const PORT = process.env.PORT ?? 3000
 
